@@ -1,0 +1,1 @@
+# `telegraf-single` Chart
