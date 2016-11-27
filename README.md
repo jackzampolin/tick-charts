@@ -5,8 +5,7 @@ This is a collection of [Helm](https://github.com/kubernetes/helm) [Charts](http
 - [influxdb](/influxdb/README.md)
 - [chronograf](/chronograf/README.md)
 - [kapacitor](/kapacitor/README.md)
-- [telegraf-daemonset](/telegraf-daemonset/README.md)
-- [telegraf-single](/telegraf-single/README.md)
+- [telegraf](/telegraf/README.md)
 
 ### Dependencies
 
