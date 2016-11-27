@@ -29,5 +29,5 @@ $ helm install telegraf-single-0.1.0.tgz --name {{ .Release.Name }} --namespace 
 
 First package all the charts:
 ```bash
-$ 
+$ helm package chronograf influxdb kapacitor telegraf
 ```
