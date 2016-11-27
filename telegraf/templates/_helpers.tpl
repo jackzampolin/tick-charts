@@ -1,27 +1,64 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "fullname" . }}
-  labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-data:
-  telegraf.conf: |+
-    {{- if .Values.config.global_tags }}
-    [global_tags]
-      {{- range $key, $val := .Values.config.global_tags}}
+{{/* vim: set filetype=mustache: */}}
+{{/*
+Expand the name of the chart.
+*/}}
+{{- define "name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 24 -}}
+{{- end -}}
+
+{{/*
+Create a default fully qualified app name.
+We truncate at 24 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "fullname" -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 24 -}}
+{{- end -}}
+
+{{/*
+  CUSTOM TEMPLATES: This section contains templates that make up the different parts of the telegraf configuration file.
+  - global_tags section
+  - agent section
+*/}}
+
+{{- define "global_tags" -}}
+{{- if . -}}
+[global_tags]
+  {{- range $key, $val := . }}
       {{ $key }} = {{ $val | quote }}
-      {{- end }}
-    {{- end }}
-    [agent]
-    {{- range $key, $value := .Values.config.agent -}}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{- define "agent" -}}
+[agent]
+{{- range $key, $value := . -}}
+  {{- $tp := typeOf $value }}
+  {{- if eq $tp "string"}}
+      {{ $key }} = {{ $value | quote }}
+  {{- end }}
+  {{- if eq $tp "float64"}}
+      {{ $key }} = {{ $value | int64 }}
+  {{- end }}
+  {{- if eq $tp "int"}}
+      {{ $key }} = {{ $value | int64 }}
+  {{- end }}
+  {{- if eq $tp "bool"}}
+      {{ $key }} = {{ $value }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{- define "outputs" -}}
+{{- range $output, $config := . }}
+    [[outputs.{{ $output }}]]
+  {{- if $config }}
+    {{- range $key, $value := $config -}}
       {{- $tp := typeOf $value }}
       {{- if eq $tp "string"}}
       {{ $key }} = {{ $value | quote }}
       {{- end }}
-      {{- if eq $tp "float"}}
+      {{- if eq $tp "float64"}}
       {{ $key }} = {{ $value | int64 }}
       {{- end }}
       {{- if eq $tp "int"}}
@@ -30,46 +67,31 @@ data:
       {{- if eq $tp "bool"}}
       {{ $key }} = {{ $value }}
       {{- end }}
-    {{- end }}
-    {{- range $output, $config := .Values.config.outputs }}
-    [[outputs.{{ $output }}]]
-      {{- if $config }}
-        {{- range $key, $value := $config }}
-          {{- $tp := typeOf $value }}
-          {{- if eq $tp "string"}}
-      {{ $key }} = {{ $value | quote }}
-          {{- end }}
-          {{- if eq $tp "float"}}
-      {{ $key }} = {{ $value | int64 }}
-          {{- end }}
-          {{- if eq $tp "int"}}
-      {{ $key }} = {{ $value | int64 }}
-          {{- end }}
-          {{- if eq $tp "bool"}}
-      {{ $key }} = {{ $value }}
-          {{- end }}
-          {{- if eq $tp "[]interface {}" }}
+      {{- if eq $tp "[]interface {}" }}
       {{ $key }} = [
-              {{- $numOut := len $value }}
-              {{- $numOut := sub $numOut 1 }}
-              {{- range $b, $val := $value }}
-                {{- $i := int64 $b }}
-                {{- if eq $i $numOut }}
+          {{- $numOut := len $value }}
+          {{- $numOut := sub $numOut 1 }}
+          {{- range $b, $val := $value }}
+            {{- $i := int64 $b }}
+            {{- if eq $i $numOut }}
         {{ $val | quote }}
-                {{- else }}
+            {{- else }}
         {{ $val | quote }},
-                {{- end }}
-              {{- end }}
-      ]
+            {{- end }}
           {{- end }}
-        {{- end }}
+      ]
       {{- end }}
     {{- end }}
-    {{ range $input, $config := .Values.config.inputs -}}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{- define "inputs" -}}
+{{- range $input, $config := . -}}
     [[inputs.{{- $input }}]]
-      {{- if $config }}
-        {{- range $key, $value := $config }}
-          {{- $tp := typeOf $value }}
+      {{- if $config -}}
+        {{- range $key, $value := $config -}}
+          {{- $tp := typeOf $value -}}
           {{- if eq $tp "string" }}
       {{ $key }} = {{ $value | quote }}
           {{- end }}
@@ -139,4 +161,4 @@ data:
         {{- end }}
       {{- end }}
     {{ end }}
-  
+{{- end -}}

@@ -1,23 +1,24 @@
+{{- if .Values.daemonset.enabled -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "fullname" . }}-ds
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "fullname" . }}-ds
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
 spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "fullname" . }}-ds
     spec:
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml .Values.daemonset.resources | indent 10 }}
         env:
         - name: NODE_IP
           valueFrom:
@@ -51,4 +52,5 @@ spec:
           path: /var/run/utmp
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "fullname" . }}-ds
+{{- end -}}

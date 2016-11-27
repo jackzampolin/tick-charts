@@ -1,6 +1,6 @@
-name: telegraf-daemonset
+name: telegraf
 version: 0.1.0
-description: Chart for a Telegraf Daemonset
+description: Chart for Telegraf Kubernetes deployments
 keywords:
 - telegraf
 - collector
