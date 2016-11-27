@@ -7,9 +7,32 @@ This is a collection of [Helm](https://github.com/kubernetes/helm) [Charts](http
 - [kapacitor](/kapacitor/README.md)
 - [telegraf](/telegraf/README.md)
 
-### Dependencies
+### Deploy the whole stack!
 
-To use the charts in this repo you need a working Helm CLI and a `tiller` container running in a Kubernetes or Minikube instance. To do this first [install the `helm` cli](https://github.com/kubernetes/helm/blob/master/docs/install.md). Then `tiller` can be installed in which ever cluster you have your `kubectl` configured to use by calling `helm init`. Once you have installed and initialized helm in your cluster you can use this repo.
+- Have your `kubectl` tool configured for the cluster where you would like to deploy the stack.
+- Have `helm` and `tiller` installed and configured
+  - Download and configure the `helm` cli
+    * [link](https://github.com/kubernetes/helm/blob/master/docs/install.md)
+  - Run `helm init` to install `tiller` in your cluster
+    * [link](https://github.com/kubernetes/helm/blob/master/docs/install.md#installing-tiller)
+- Package all the charts:
+```bash
+$ helm package chronograf influxdb kapacitor telegraf
+```
+- Install the charts:
+```bash
+$ helm install influxdb-0.1.0.tgz --name influxdb --namespace tick
+$ helm install telegraf-0.1.0.tgz --name telegraf --namespace tick
+$ helm install kapacitor-0.1.0.tgz --name kapacitor --namespace tick
+$ helm install chronograf-0.1.0.tgz --name chronograf --namespace tick
+```
+- Wait for the IP for chronograf to appear:
+```bash
+$ kubectl get svc -w --namespace tick chronograf-chronograf
+```
+- Open chronograf in your browser and configure it
+  - InfluxDB URL: `http://infludb-influxdb.tick:8086`
+  - Kapacitor URL: `http://kapacitor-kapacitor.tick:9092`
 
 ### Usage
 
@@ -22,12 +45,5 @@ $ helm package /path/to/chart
 This will create a file named `{{ .Chart.Name }}-{{ .Chart.Version }}.tgz` that is the chart file to be deployed. The default configurations are listed in the `values.yaml` file in the root of each repo. To deploy the chart with some default values create your custom `values.yaml` file to change the default configuration or modify the `values.yaml` file at the root of the chart before packaging it:
 
 ```bash
-$ helm install telegraf-single-0.1.0.tgz --name {{ .Release.Name }} --namespace {{ .Release.Namespace }} --values /path/to/my_values.yaml
-```
-
-### Deploy the full stack!
-
-First package all the charts:
-```bash
-$ helm package chronograf influxdb kapacitor telegraf
+$ helm install telegraf-0.1.0.tgz --name {{ .Release.Name }} --namespace {{ .Release.Namespace }} --values /path/to/my_values.yaml
 ```

@@ -3,7 +3,7 @@
 ##
 image:
   repository: "kapacitor"
-  tag: "1.1.0-alpine"
+  tag: "1.1.0"
   pullPolicy: "IfNotPresent"
 
 ## Specify a service type
@@ -31,4 +31,4 @@ resources:
     cpu: 2
     
 # Set url for kapacitor to point to 
-InfluxURL: http://test-influxdb.influxdb:8086
+InfluxURL: http://influxdb-influxdb.tick:8086

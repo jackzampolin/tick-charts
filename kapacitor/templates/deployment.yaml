@@ -21,16 +21,7 @@ spec:
         - name: KAPACITOR_INFLUXDB_0_URLS_0
           value: {{ .Values.InfluxURL }}
         ports:
-        - name: api
-          containerPort: 9092
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 9092
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 9092
+        - containerPort: 9092
         volumeMounts:
         - name: data
           mountPath: /var/lib/kapacitor

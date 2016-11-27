@@ -8,6 +8,8 @@ image:
   tag: "1.1.0-alpine"
   pullPolicy: IfNotPresent
 
+## Configure the telegraf daemonset here.
+## Resource limits and outputs can be set seperately
 daemonset:
   enabled: true
   ## Configure resource requests and limits
@@ -29,7 +31,7 @@ daemonset:
     outputs:
       influxdb:
         urls:
-          - "http://influxdb.tick:8086"
+          - "http://influxdb-influxdb.tick:8086"
         database: "telegraf"
     inputs:
       cpu:
@@ -50,7 +52,9 @@ daemonset:
         url: "http://$NODE_IP:10255"
         bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
         insecure_skip_verify: true
-
+        
+## Configure the telegraf single instance here.
+## Resource limits and outputs can be set seperately
 single:
   enabled: true
   ## Configure resource requests and limits
@@ -73,8 +77,6 @@ single:
   ## For full list of possible values see `/docs/all-config-values.yaml` and `/docs/all-config-values.toml`
   ## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
   config:
-    global_tags:
-      foo: "bar"
     agent:
       interval: "1s"
       round_interval: true
@@ -92,18 +94,18 @@ single:
     outputs:
       influxdb:
         urls:
-          - "http://influxdb.tick:8086"
+          - "http://influxdb-influxdb.tick:8086"
         database: "telegraf"
     inputs:
       prometheus:
         urls: 
           - "https://kubernetes.default:443/metrics"
-        name_prefix: "k8s_"
+        name_prefix: "prom_"
         bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
         insecure_skip_verify: true
       influxdb:
         urls:
-          - "http://influxdb.tick:8086/debug/vars"
+          - "http://influxdb-influxdb.tick:8086/debug/vars"
         timeout: "5s"
       statsd:
         service_address: ":8125"
