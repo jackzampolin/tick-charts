@@ -1,4 +1,0 @@
-apiVersion: v1
-description: A Telegraf Helm chart for Kubernetes
-name: telegraf
-version: 1.1.1

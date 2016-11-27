@@ -5,7 +5,7 @@ metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   template:
     metadata:
       labels:
@@ -15,15 +15,32 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: KAPACITOR_HOSTNAME
+          value: {{ template "fullname" . }}.{{ .Release.Namespace }}
+        - name: KAPACITOR_INFLUXDB_0_URLS_0
+          value: {{ .Values.InfluxURL }}
         ports:
-        - containerPort: {{ .Values.service.internalPort }}
+        - name: api
+          containerPort: 9092
         livenessProbe:
           httpGet:
             path: /
-            port: {{ .Values.service.internalPort }}
+            port: 9092
         readinessProbe:
           httpGet:
             path: /
-            port: {{ .Values.service.internalPort }}
+            port: 9092
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/kapacitor
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: data
+        {{ if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}
+          {{ else }}
+          emptyDir: {}
+          {{ end }}

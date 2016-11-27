@@ -5,7 +5,7 @@ metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   template:
     metadata:
       labels:
@@ -16,14 +16,25 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.service.internalPort }}
+        - containerPort: 8888
         livenessProbe:
           httpGet:
-            path: /
-            port: {{ .Values.service.internalPort }}
+            path: /ping
+            port: 8888
         readinessProbe:
           httpGet:
-            path: /
-            port: {{ .Values.service.internalPort }}
+            path: /ping
+            port: 8888
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/chronograf
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: data
+        {{ if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}
+          {{ else }}
+          emptyDir: {}
+          {{ end }}

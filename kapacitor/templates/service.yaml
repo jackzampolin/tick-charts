@@ -7,9 +7,9 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - port: {{ .Values.service.externalPort }}
-    targetPort: {{ .Values.service.internalPort }}
+  - port: 9092
+    targetPort: 9092
     protocol: TCP
-    name: {{ .Values.service.name }}
+    name: api
   selector:
     app: {{ template "fullname" . }}

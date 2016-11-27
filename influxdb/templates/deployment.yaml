@@ -8,6 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  replicas: 1
   template:
     metadata:
       labels:
@@ -56,7 +57,7 @@ spec:
           timeoutSeconds: 1
         volumeMounts:
         - name: data
-          mountPath: {{ .Values.storage_directory }}
+          mountPath: {{ .Values.config.storage_directory }}
         - name: config
           mountPath: /etc/influxdb
       volumes:
