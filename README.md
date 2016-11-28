@@ -31,7 +31,7 @@ $ helm install chronograf-0.1.0.tgz --name chronograf --namespace tick
 $ kubectl get svc -w --namespace tick chronograf-chronograf
 ```
 - Open chronograf in your browser and configure it
-  - InfluxDB URL: `http://infludb-influxdb.tick:8086`
+  - InfluxDB URL: `http://influxdb-influxdb.tick:8086`
   - Kapacitor URL: `http://kapacitor-kapacitor.tick:9092`
 
 ### Usage
