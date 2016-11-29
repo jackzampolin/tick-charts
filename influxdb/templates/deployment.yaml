@@ -22,27 +22,27 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
         - name: api
-          containerPort: {{ .Values.config.http.bind_address }}
-        {{ if .Values.config.admin.enabled }}
+          containerPort: {{ .Values.config.http.bind_address -}}
+        {{- if .Values.config.admin.enabled -}}
         - name: admin
           containerPort: {{ .Values.config.admin.bind_address }}
-        {{ end }}
-        {{ if .Values.config.graphite.enabled }}
+        {{- end }}
+        {{- if .Values.config.graphite.enabled -}}
         - name: graphite
           containerPort: {{ .Values.config.graphite.bind_address }}
-        {{ end }}
-        {{ if .Values.config.collectd.enabled }}
+        {{- end }}
+        {{- if .Values.config.collectd.enabled -}}
         - name: collectd
           containerPort: {{ .Values.config.collectd.bind_address }}
-        {{ end }}
-        {{ if .Values.config.udp.enabled }}
+        {{- end }}
+        {{- if .Values.config.udp.enabled -}}
         - name: udp
           containerPort: {{ .Values.config.udp.bind_address }}
-        {{ end }}
-        {{ if .Values.config.opentsdb.enabled }}
+        {{- end }}
+        {{- if .Values.config.opentsdb.enabled -}}
         - name: opentsdb
           containerPort: {{ .Values.config.opentsdb.bind_address }}
-        {{ end }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /ping
@@ -62,12 +62,12 @@ spec:
           mountPath: /etc/influxdb
       volumes:
       - name: data
-      {{ if .Values.persistence.enabled }}
+      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "fullname" . }}
-      {{ else }}
+      {{- else }}
         emptyDir: {}
-      {{ end }}
+      {{- end }}
       - name: config
         configMap:
           name: {{ template "fullname" . }}
