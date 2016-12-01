@@ -47,3 +47,7 @@ This will create a file named `{{ .Chart.Name }}-{{ .Chart.Version }}.tgz` that 
 ```bash
 $ helm install telegraf-0.1.0.tgz --name {{ .Release.Name }} --namespace {{ .Release.Namespace }} --values /path/to/my_values.yaml
 ```
+
+### NOTES
+
+- Configmap changes - 

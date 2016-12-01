@@ -33,6 +33,6 @@ resources:
 ingress:
   enabled: false
   tls: false
-  hostname: chronograf.influxdata.com
+  hostname: chronograf.foobar.com
   annotations:
-    # kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/ingress.class: "nginx"

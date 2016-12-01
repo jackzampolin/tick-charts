@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-single
+  name: {{ template "fullname" . }}-s
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -37,6 +37,6 @@ spec:
     {{- end }}
   {{- end }}
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "fullname" . }}-s
 {{- end -}}
 {{- end -}}

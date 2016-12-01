@@ -2,9 +2,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-single
+  name: {{ template "fullname" . }}-s
   labels:
-    app: {{ template "fullname" . }}-single
+    app: {{ template "fullname" . }}-s
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
 spec:
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}-single
+        app: {{ template "fullname" . }}-s
     spec:
       containers:
       - name: {{ template "fullname" . }}
@@ -26,5 +26,5 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}-single
+          name: {{ template "fullname" . }}-s
 {{- end -}}

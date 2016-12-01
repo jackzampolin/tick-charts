@@ -4,6 +4,9 @@ metadata:
   name: {{ template "fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    app: {{ template "fullname" . }}
 spec:
   type: {{ .Values.service.type }}
   ports:

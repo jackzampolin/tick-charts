@@ -1,10 +1,102 @@
-# `telegraf` Chart
+# Telegraf
+
+[Telegraf](https://github.com/influxdata/telegraf) is a plugin-driven server agent written by the folks over at [InfluxData](https://influxdata.com) for collecting & reporting metrics.
+
+## TL;DR
+
+```console
+$ helm install stable/telegraf
+```
+
+## Introduction
+
+This chart bootstraps a `telegraf` deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+
+## Prerequisites
+
+- Kubernetes 1.4+ with Beta APIs enabled
+
+## Installing the Chart
+
+To install the chart with the release name `my-release`:
+
+```console
+$ helm install --name my-release stable/telegraf
+```
+
+The command deploys Telegraf on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+
+> **Tip**: List all releases using `helm list`
+
+## Uninstalling the Chart
+
+To uninstall/delete the `my-release` deployment:
+
+```console
+$ helm delete my-release
+```
+
+The command removes all the Kubernetes components associated with the chart and deletes the release.
+ 
+## Configuration
+
+The following tables lists the configurable parameters of the Telegraf chart and their default values.
+
+```yaml
+## Image
+image.repo: "telegraf"
+image.tag: "1.1.0-alpine"
+image.pullPolicy: IfNotPresent
+## Daemonset - configuration for telegraf instances running as daemonset
+daemonset.enabled: true
+# resource requests and limits for the daemonset
+daemonset.resources.requests.memory: 256Mi
+daemonset.resources.requests.cpu: 0.1
+daemonset.resources.limits.memory: 2Gi
+daemonset.resources.limits.cpu: 1
+## Exposed telegraf configuration
+## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
+daemonset.config: # See Telegraf Configuration
+## Single - configuration for telegraf instances running as deployment
+single.enabled: true
+# resource requests and limits for the single instance
+single.resources.requests.memory: 256Mi
+single.resources.requests.cpu: 0.1
+single.resources.limits.memory: 2Gi
+single.resources.limits.cpu: 1
+single.service.enabled: true
+single.service.type: NodePort
+## Exposed telegraf configuration
+## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
+single.config: # see Telegraf Configuration
+```
+
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+
+```console
+$ helm install --name my-release \
+  --set single.enabled=false \
+    stable/telegraf
+```
+
+The above command prevents the single telegraf instance from deploying.
+
+Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
+
+```console
+$ helm install --name my-release -f values.yaml stable/telegraf
+```
+
+> **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Telegraf Configuration
 
 This chart deploys the following by default:
 
 - `telegraf` (`telegraf-ds`) running in a daemonset with the following plugins enabled
   * [`cpu`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/system)
   * [`disk`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/system)
+  * [`docker`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/docker)
   * [`diskio`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/system)
   * [`kernel`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/system)
   * [`kubernetes`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/kubernetes)
@@ -12,15 +104,16 @@ This chart deploys the following by default:
   * [`processes`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/system)
   * [`swap`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/system)
   * [`system`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/system)
-- A single `telegraf` deployment (`telegraf-single`) with an associated service running the following plugins:
+
+- A single `telegraf` deployment (`telegraf-s`) with an associated service running the following plugins:
   * [`prometheus`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/prometheus)
   * [`influxdb`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/influxdb)
   * [`statsd`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/statsd)
 
   
-### Supported Outputs - Single and Daemonset
+### Supported Outputs
 
-The following telegraf output plugins are supported throughout this chart:
+The following telegraf output plugins are supported for both the daemonset and the single instance. To enable them uncomment them in `.Values.{{ "daemonset" | "single" }}.outputs`:
 
 - [`amqp`](https://github.com/influxdata/telegraf/tree/master/plugins/outputs/amqp)
 - [`influxdb`](https://github.com/influxdata/telegraf/tree/master/plugins/outputs/influxdb)
@@ -29,18 +122,18 @@ The following telegraf output plugins are supported throughout this chart:
 - [`nats`](https://github.com/influxdata/telegraf/tree/master/plugins/outputs/nats)
 - [`nsq`](https://github.com/influxdata/telegraf/tree/master/plugins/outputs/nsq)
 
-### Service Plugins - Single
+### Service Plugins - Single Instance
 
-The single telegraf also supports all service plugins. The associated service exposes the ports if the configuration is included:
+The single telegraf also supports all service plugins. To enable them uncomment the named plugin in `.Values.single.inputs` section. The associated service exposes the ports if it is enabled:
 
 - [`tcp_listener`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/tcp_listener)
 - [`udp_listener`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/udp_listener)
 - [`statsd`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/statsd)
 - [`http_listener`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/http_listener)
 
-### Supported Inputs - Single
+### Supported Inputs - Single Instance
 
-The input plugins supported by the single telegraf instance are as follows:
+To enable additional input plugins uncomment them in the `.Values.single.inputs` section. The input plugins supported by the single telegraf instance are as follows:
 
 - [`aerospike`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/aerospike)
 - [`apache`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/apache)
@@ -83,13 +176,12 @@ The input plugins supported by the single telegraf instance are as follows:
 - [`udp_listener`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/udp_listener)
 - [`webhooks`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/webhooks)
 
+### Future work:
 
-### TODO:
 There are a couple of additional plugins that could/should possibly be supported but are not yet:
-- Single
+- `telegraf-s`
   - [`smnp`](https://github.com/influxdata/telegraf/tree/master/plugins/smnp)
-- Daemonset
-  - [`docker`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/docker)
+- `telegraf-ds`
   - [`jolokia`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/jolokia)
   - [`bcache`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/bcache)
   - [`cgroup`](https://github.com/influxdata/telegraf/tree/master/plugins/inputs/cgroup)

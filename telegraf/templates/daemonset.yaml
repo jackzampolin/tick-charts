@@ -35,6 +35,9 @@ spec:
         - name: procro
           mountPath: /rootfs/proc
           readOnly: true
+        - name: docker-socket
+          mountPath: /var/run/docker.sock
+          # readOnly: true
         - name: varrunutmpro
           mountPath: /var/run/utmp
           readOnly: true
@@ -44,6 +47,9 @@ spec:
       - name: sysro
         hostPath:
           path: /sys
+      - name: docker-socket
+        hostPath:
+          path: /var/run/docker.sock
       - name: procro
         hostPath:
           path: /proc
