@@ -40,38 +40,7 @@ The command removes all the Kubernetes components associated with the chart and 
  
 ## Configuration
 
-The following tables lists the configurable parameters of the Telegraf chart and their default values.
-
-```yaml
-## Image
-image.repo: "telegraf"
-image.tag: "1.1.0-alpine"
-image.pullPolicy: IfNotPresent
-## Daemonset - configuration for telegraf instances running as daemonset
-daemonset.enabled: true
-# resource requests and limits for the daemonset
-daemonset.resources.requests.memory: 256Mi
-daemonset.resources.requests.cpu: 0.1
-daemonset.resources.limits.memory: 2Gi
-daemonset.resources.limits.cpu: 1
-## Exposed telegraf configuration
-## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
-daemonset.config: # See Telegraf Configuration
-## Single - configuration for telegraf instances running as deployment
-single.enabled: true
-# resource requests and limits for the single instance
-single.resources.requests.memory: 256Mi
-single.resources.requests.cpu: 0.1
-single.resources.limits.memory: 2Gi
-single.resources.limits.cpu: 1
-single.service.enabled: true
-single.service.type: NodePort
-## Exposed telegraf configuration
-## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
-single.config: # see Telegraf Configuration
-```
-
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+The default configuration parameters are listed in `values.yaml`. To change the defaults, specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
 $ helm install --name my-release \

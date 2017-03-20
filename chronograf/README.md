@@ -12,7 +12,7 @@ $ helm install stable/chronograf --name foo --namespace bar
 
 ## Introduction
 
-This chart bootstraps A Chronograf deployment and service on a Kubernetes cluster using the Helm Package manager.
+This chart bootstraps a Chronograf deployment and service on a Kubernetes cluster using the Helm Package manager.
 
 ## Prerequisites
 
@@ -43,32 +43,8 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Chronograf chart and 
-their default values.
-
-```yaml
-image.repository: "quay.io/influxdb/chronograf"
-image.tag: "latest"
-image.pullPolicy: "Always"
-service.type: LoadBalancer
-persistence.enabled: false
-persistence.storageClass: generic
-persistence.accessMode: ReadWriteOnce
-persistence.size: 8Gi
-resources.requests.memory: 256Mi
-resources.requests.cpu: 0.1
-resources.limits.memory: 2Gi
-resources.limits.cpu: 2
-
-# Use this ingress with service.type: NodePort
-ingress.enabled: false
-ingress.tls: false
-ingress.hostname: chronograf.foobar.com
-ingress.annotations:
-ingress.annotations.kubernetes.io/ingress.class: "nginx"
-```
-
-The [full image documentation](https://quay.io/influxdb/chronograf) contains more information about running Chronograf in docker.
+The configurable parameters of the Chronograf chart and 
+their descriptions can be seen in `values.yaml`. The [full image documentation](https://quay.io/influxdb/chronograf) contains more information about running Chronograf in docker.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

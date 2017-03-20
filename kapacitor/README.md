@@ -43,27 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Kapacitor chart and 
-their default values.
-
-```yaml
-image.repository: "kapacitor"
-image.tag: "1.1.0"
-image.pullPolicy: "IfNotPresent"
-service.type: NodePort
-persistence.enabled: false
-persistence.storageClass: generic
-persistence.accessMode: ReadWriteOnce
-persistence.size: 8Gi
-resources.requests.memory: 256Mi
-resources.requests.cpu: 0.1
-resources.limits.memory: 2Gi
-resources.limits.cpu: 2
-
-# This is the location where kapacitor will look for an Influxdb
-# instance to create a subscription on.
-InfluxURL: http://influxdb-influxdb.tick:8086
-```
+The configurable parameters of the Kapacitor chart and the default values are listed in `values.yaml`.
 
 The [full image documentation](https://hub.docker.com/_/kapacitor/) contains more information about running Kapacitor in docker.
 
@@ -71,7 +51,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set InfluxURL=http://myinflux.mytld:8086,persistence.enabled=true \
+  --set influxURL=http://myinflux.mytld:8086,persistence.enabled=true \
     stable/kapacitor
 ```
 

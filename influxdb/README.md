@@ -43,30 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the InfluxDB chart and 
-their default values.
-
-```yaml
-image.repo: "influxdb"
-image.tag: "1.1.0-alpine"
-image.pullPolicy: IfNotPresent
-service.type: NodePort
-persistence.enabled: false
-persistence.storageClass: generic
-persistence.accessMode: ReadWriteOnce
-persistence.size: 8Gi
-resources.requests.memory: 256Mi
-resources.requests.cpu: 0.1
-resources.limits.memory: 16Gi
-resources.limits.cpu: 8
-# The configuration paramaters come from the InfluxDB configuration file
-# ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
-config.{value}
-config.{section}.{value}
-
-## For example to change the default API port you would set:
-## config.http.bind_address: 8087
-```
+The default configuration values for this chart are listed in `values.yaml`. 
 
 The [full image documentation](https://hub.docker.com/_/influxdb/) contains more information about running InfluxDB in docker.
 
