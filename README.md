@@ -32,6 +32,8 @@ $ kubectl get svc -w --namespace tick -l app dash-chronograf
 - Open chronograf in your browser and configure it
   - InfluxDB URL: `http://data-influxdb.tick:8086`
   - Kapacitor URL: `http://alerts-kapacitor.tick:9092`
+  
+Or, just run `./create.sh` and let the shell script do it for you! You can also tear down the installation with `./destroy.sh`
 
 ### Usage
 
